@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', async () => {
     try {
-        const res = await fetch('https://script.google.com/macros/s/AKfycbwmwoEZD5TwGbJyoAJogpA-cp_q_ws1iazn1xwsv_iiCa3y9aBGIz_2tnVWGVmj5IfkWg/exec');
+        const res = await fetch('https://script.google.com/macros/s/AKfycbwcT3EiT7osmt9i8kw_m3ZX5Zl9lOr7wDDWlg1L453xiIQJkzUe3OSxgP_gGHKNJWET8w/exec');
         
         if (!res.ok) throw new Error("Network response was not ok");
         
