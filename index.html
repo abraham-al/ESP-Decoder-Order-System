@@ -3,29 +3,78 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Decoder Stock Order</title>
+    <title>DStv | Order Hub</title>
+    <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 </head>
-<body class="bg-light">
-    <div class="container py-4">
-        <div class="card shadow-sm mx-auto" style="max-width: 500px;">
-            <div class="card-header bg-primary text-white text-center">
-                <h5>Decoder Stock Order</h5>
+<body>
+    <div class="container-fluid py-4">
+        <div class="card futuristic-card shadow-lg mx-auto">
+            <div class="card-header bg-transparent border-0 text-center">
+                <h2 class="futuristic-title">Decoder Order Hub</h2>
+                <div class="glow-line"></div>
             </div>
             <div class="card-body">
                 <form id="orderForm">
-                    <div class="mb-3"><label>Order Date</label><input type="text" id="orderDate" class="form-control" readonly></div>
-                    <div class="mb-3"><label>Territory</label><select id="territory" class="form-select" required><option value="">Select Territory</option><option value="Hawassa">Hawassa</option></select></div>
-                    <div class="mb-3"><label>Electronic Shop (ESP)</label><input class="form-control" list="espList" id="espInput" placeholder="Type to search..." required><datalist id="espList"></datalist></div>
-                    <div class="row"><div class="col-6 mb-3"><label>ESP ID</label><input type="text" id="espId" class="form-control" readonly></div><div class="col-6 mb-3"><label>Phone</label><input type="text" id="espPhone" class="form-control" required></div></div>
-                    <div class="mb-3"><label>Sales Representative</label><select id="salesRep" class="form-select" required><option value="">Select Rep</option><option value="Abraham">Abraham</option><option value="Samuel">Samuel</option><option value="Hana">Hana</option></select></div>
-                    <div class="mb-3"><label>Delivery Date</label><input type="date" id="deliveryDate" class="form-control" required></div>
-                    <div class="mb-3"><label>Quantity</label><input type="number" id="qty" class="form-control" min="1" required></div>
-                    <div class="mb-3"><label>Remarks</label><textarea id="remarks" class="form-control" rows="2"></textarea></div>
-                    <button type="submit" id="submitBtn" class="btn btn-primary w-100">Submit Order</button>
+                    <!-- Step 1: Shop Selection -->
+                    <div class="mb-4">
+                        <label class="form-label futuristic-label">Territory</label>
+                        <select id="territory" class="form-select futuristic-input" required>
+                            <option value="" disabled selected>Choose Territory</option>
+                            <option value="Hawassa">Hawassa</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label futuristic-label">Electronic Shop (ESP)</label>
+                        <select id="espSelect" class="form-select futuristic-input" required>
+                            <option value="" disabled selected>Loading Shops...</option>
+                        </select>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-4">
+                            <label class="form-label futuristic-label">ESP ID</label>
+                            <input type="text" id="espId" class="form-control futuristic-input text-info" readonly>
+                        </div>
+                        <div class="col-md-6 mb-4">
+                            <label class="form-label futuristic-label">ESP Phone Number</label>
+                            <input type="text" id="espPhone" class="form-control futuristic-input" required>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Rep and Order Info -->
+                    <div class="mb-4">
+                        <label class="form-label futuristic-label">Sales Representative</label>
+                        <select id="salesRep" class="form-select futuristic-input" required>
+                            <option value="" disabled selected>Loading Representatives...</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label futuristic-label">Requested Delivery Date</label>
+                        <input type="date" id="deliveryDate" class="form-control futuristic-input" required>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label futuristic-label">Decoder Quantity</label>
+                        <input type="number" id="qty" class="form-control futuristic-input" min="1" required placeholder="0">
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label futuristic-label">Additional Remarks</label>
+                        <textarea id="remarks" class="form-control futuristic-input" rows="2" placeholder="e.g., Urgent, Weekend delivery, Promotional stock..."></textarea>
+                    </div>
+
+                    <!-- Futuristic Submit Button -->
+                    <button type="submit" id="submitBtn" class="btn futuristic-btn w-100 mt-3">
+                        Submit Order
+                    </button>
                 </form>
-                <div id="statusMsg" class="mt-3 text-center fw-bold"></div>
+
+                <!-- Status Message Area -->
+                <div id="statusMsg" class="mt-4 text-center"></div>
             </div>
         </div>
     </div>
