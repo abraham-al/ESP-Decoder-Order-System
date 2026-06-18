@@ -81,7 +81,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         try {
             // REPLACE THIS URL BELOW
-            const postEndpoint = 'YOUR_WEB_APP_URL';
+            const postEndpoint = 'https://script.google.com/macros/s/AKfycbwmwoEZD5TwGbJyoAJogpA-cp_q_ws1iazn1xwsv_iiCa3y9aBGIz_2tnVWGVmj5IfkWg/exec';
 
             const response = await fetch(postEndpoint, {
                 method: 'POST',
