@@ -1,0 +1,4 @@
+body { font-family: sans-serif; }
+.card { border-radius: 15px; }
+.btn-primary { background-color: #007bff; border: none; padding: 10px; }
+#statusMsg { min-height: 24px; }
