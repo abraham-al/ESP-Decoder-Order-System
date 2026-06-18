@@ -1,22 +1,24 @@
 body {
     background: radial-gradient(circle at top right, #0d1b33, #050a14);
-    color: #ffffff;
-    font-family: 'Segoe UI', sans-serif;
     min-height: 100vh;
+    color: #e0e0e0;
 }
 .card {
-    background: rgba(13, 27, 51, 0.85); /* Deep Navy */
-    border: 1px solid rgba(0, 180, 255, 0.2);
-    border-radius: 16px;
-    backdrop-filter: blur(10px);
+    background: rgba(13, 27, 51, 0.9);
+    border: 1px solid rgba(0, 180, 255, 0.3);
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
 }
 .form-select, .form-control {
-    background: #0a1428;
-    border: 1px solid #1a3a5f;
-    color: #fff;
+    background: #0a1428 !important;
+    border: 1px solid #1a3a5f !important;
+    color: white !important;
 }
 .btn-primary {
     background: linear-gradient(90deg, #00d2ff, #3a7bd5);
     border: none;
-    font-weight: bold;
+    border-radius: 10px;
+    padding: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
 }
