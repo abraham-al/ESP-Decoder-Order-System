@@ -21,13 +21,33 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     try {
         // --- B. Fetch Data from Supabase ---
-        const { data: esps, error: espError } = await db.from('esps').select('*');
-        const { data: reps, error: repError } = await db.from('reps').select('*');
+        // ESPs table can exceed Supabase's default 1000-row response cap,
+        // so we page through it in batches until we've pulled everything.
+        async function fetchAllEsps() {
+            const pageSize = 1000;
+            let from = 0;
+            let allRows = [];
+            while (true) {
+                const { data, error } = await db
+                    .from('esps')
+                    .select('*')
+                    .range(from, from + pageSize - 1);
 
-        if (espError) console.error("ESP Fetch Error:", espError);
+                if (error) {
+                    console.error("ESP Fetch Error:", error);
+                    break;
+                }
+                allRows = allRows.concat(data || []);
+                if (!data || data.length < pageSize) break; // last page reached
+                from += pageSize;
+            }
+            return allRows;
+        }
+
+        const { data: reps, error: repError } = await db.from('reps').select('*');
         if (repError) console.error("Rep Fetch Error:", repError);
 
-        allEsps = esps || [];
+        allEsps = await fetchAllEsps();
         
         // --- C. Populate Reps ---
         const repSelect = document.getElementById('salesRep');
