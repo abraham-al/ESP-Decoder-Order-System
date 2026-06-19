@@ -8,56 +8,50 @@ const TERRITORIES = ["Adama", "Arada and Sululta", "Arbaminch", "Bahirdar and Go
 let allEsps = [];
 
 document.addEventListener('DOMContentLoaded', async () => {
-    // 1. Setup Territories
+    // 1. Populate Territory Dropdown
     const terrSelect = document.getElementById('territory');
-    TERRITORIES.forEach(t => terrSelect.innerHTML += `<option value="${t}">${t}</option>`);
+    TERRITORIES.forEach(t => {
+        let opt = document.createElement('option');
+        opt.value = t;
+        opt.innerHTML = t;
+        terrSelect.appendChild(opt);
+    });
 
-    // 2. Load Data
-    const { data: esps } = await supabase.from('esps').select('*');
+    // 2. Fetch Data from Supabase
+    // Make sure your table names are exactly 'esps' and 'reps' in your dashboard
+    const { data: esps, error: err1 } = await supabase.from('esps').select('*');
+    const { data: reps, error: err2 } = await supabase.from('reps').select('*');
+
+    if (err1) console.error("Error loading ESPs:", err1);
+    if (err2) console.error("Error loading Reps:", err2);
+
     allEsps = esps || [];
     
-    const { data: reps } = await supabase.from('reps').select('*');
+    // 3. Populate Sales Rep Dropdown
     const repSelect = document.getElementById('salesRep');
-    (reps || []).forEach(r => repSelect.innerHTML += `<option value="${r.name}">${r.name}</option>`);
+    if (reps) {
+        reps.forEach(r => {
+            let opt = document.createElement('option');
+            // Assuming your column name is 'name' or 'sales_rep_name'
+            opt.value = r.name; 
+            opt.innerHTML = r.name;
+            repSelect.appendChild(opt);
+        });
+    }
 
-    // 3. Filter Shops
+    // 4. Handle Territory Change to Filter Shops
     terrSelect.addEventListener('change', (e) => {
         const espSelect = document.getElementById('espSelect');
         espSelect.innerHTML = '<option value="">Select Shop</option>';
+        
         allEsps.filter(s => s.territory === e.target.value).forEach(s => {
-            espSelect.innerHTML += `<option value="${s.esp_id}" data-phone="${s.phone}">${s.esp_name}</option>`;
+            let opt = document.createElement('option');
+            opt.value = s.esp_id;
+            opt.setAttribute('data-phone', s.phone);
+            opt.innerHTML = s.esp_name;
+            espSelect.appendChild(opt);
         });
     });
 
-    document.getElementById('espSelect').addEventListener('change', (e) => {
-        const selected = e.target.options[e.target.selectedIndex];
-        document.getElementById('espId').value = e.target.value;
-        document.getElementById('espPhone').value = selected.dataset.phone;
-    });
-
-    // 4. Submit
-    document.getElementById('orderForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const btn = document.getElementById('submitBtn');
-        btn.innerText = "Sending...";
-        
-        const { error } = await supabase.from('orders').insert([{
-            territory: document.getElementById('territory').value,
-            esp_id: document.getElementById('espId').value,
-            esp_name: document.getElementById('espSelect').options[document.getElementById('espSelect').selectedIndex].text,
-            esp_phone: document.getElementById('espPhone').value,
-            sales_rep: document.getElementById('salesRep').value,
-            delivery_date: document.getElementById('deliveryDate').value,
-            decoder_qty: parseInt(document.getElementById('qty').value),
-            remarks: document.getElementById('remarks').value
-        }]);
-
-        if (error) {
-            document.getElementById('statusMsg').innerHTML = `<div class="alert alert-danger">Error: ${error.message}</div>`;
-        } else {
-            document.getElementById('statusMsg').innerHTML = '<div class="alert alert-success">Order Submitted Successfully!</div>';
-            document.getElementById('orderForm').reset();
-        }
-        btn.innerText = "SUBMIT ORDER";
-    });
+    // ... (keep your existing submission logic here)
 });
