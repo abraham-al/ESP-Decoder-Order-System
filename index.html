@@ -5,38 +5,39 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DStv | Order Hub</title>
     <link href="https://unpkg.com/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
     <div class="container py-4">
-        <div class="card p-4 mx-auto" style="max-width: 500px; background-color: #f8f9fa;">
+        <div class="card p-4 mx-auto" style="max-width: 500px;">
             <h3 class="text-center mb-4">DSTV ESP Order Collector</h3>
             <form id="orderForm">
                 <div class="mb-3">
-                    <label>Sales Representative</label>
+                    <label class="form-label">Sales Representative</label>
                     <select id="salesRep" class="form-select" required><option value="">Select Rep</option></select>
                 </div>
                 <div class="mb-3">
-                    <label>Territory</label>
+                    <label class="form-label">Territory</label>
                     <select id="territory" class="form-select" required><option value="">Select Territory</option></select>
                 </div>
                 <div class="mb-3">
-                    <label>Electronic Shop (ESP)</label>
+                    <label class="form-label">Electronic Shop (ESP)</label>
                     <select id="espSelect" class="form-select" required><option value="">Select Shop</option></select>
                 </div>
                 <div class="row">
-                    <div class="col-6 mb-3"><label>ESP ID</label><input type="text" id="espId" class="form-control" readonly></div>
-                    <div class="col-6 mb-3"><label>Phone</label><input type="text" id="espPhone" class="form-control" readonly></div>
+                    <div class="col-6 mb-3"><label class="form-label">ESP ID</label><input type="text" id="espId" class="form-control" readonly></div>
+                    <div class="col-6 mb-3"><label class="form-label">Phone</label><input type="text" id="espPhone" class="form-control" readonly></div>
                 </div>
-                <div class="mb-3"><label>Delivery Date</label><input type="date" id="deliveryDate" class="form-control" required></div>
-                <div class="mb-3"><label>Quantity</label><input type="number" id="qty" class="form-control" min="1" required></div>
-                <div class="mb-3"><label>Remarks</label><textarea id="remarks" class="form-control" rows="2"></textarea></div>
+                <div class="mb-3"><label class="form-label">Delivery Date</label><input type="date" id="deliveryDate" class="form-control" required></div>
+                <div class="mb-3"><label class="form-label">Quantity</label><input type="number" id="qty" class="form-control" min="1" required></div>
+                <div class="mb-3"><label class="form-label">Remarks</label><textarea id="remarks" class="form-control" rows="2"></textarea></div>
                 <button type="submit" id="submitBtn" class="btn btn-primary w-100">SUBMIT ORDER</button>
             </form>
             <div id="statusMsg" class="mt-3"></div>
         </div>
     </div>
-    
+
     <script src="app.js"></script>
 </body>
 </html>
