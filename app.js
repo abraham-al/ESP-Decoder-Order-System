@@ -1,4 +1,3 @@
-// 1. Initialize Supabase
 const supabase = supabase.createClient(
     'https://umkfhmjzqvqlebwzrmea.supabase.co', 
     'sb_publishable_gBbVKE0rmVIhYJH3HDLEYQ_twdbDuaQ'
@@ -9,21 +8,19 @@ const TERRITORIES = ["Adama", "Arada and Sululta", "Arbaminch", "Bahirdar and Go
 let allEsps = [];
 
 document.addEventListener('DOMContentLoaded', async () => {
-    // Populate Territory
+    // 1. Setup Territories
     const terrSelect = document.getElementById('territory');
     TERRITORIES.forEach(t => terrSelect.innerHTML += `<option value="${t}">${t}</option>`);
 
-    // Fetch ESPs from Supabase
-    const { data: esps, error } = await supabase.from('esps').select('*');
-    if (error) console.error("Error:", error);
-    allEsps = esps;
-
-    // Fetch Reps (Assuming you have a 'reps' table in Supabase)
+    // 2. Load Data
+    const { data: esps } = await supabase.from('esps').select('*');
+    allEsps = esps || [];
+    
     const { data: reps } = await supabase.from('reps').select('*');
     const repSelect = document.getElementById('salesRep');
-    reps.forEach(r => repSelect.innerHTML += `<option value="${r.name}">${r.name}</option>`);
+    (reps || []).forEach(r => repSelect.innerHTML += `<option value="${r.name}">${r.name}</option>`);
 
-    // Filter ESPs by Territory
+    // 3. Filter Shops
     terrSelect.addEventListener('change', (e) => {
         const espSelect = document.getElementById('espSelect');
         espSelect.innerHTML = '<option value="">Select Shop</option>';
@@ -32,32 +29,35 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     });
 
-    // Form Submission to Supabase
+    document.getElementById('espSelect').addEventListener('change', (e) => {
+        const selected = e.target.options[e.target.selectedIndex];
+        document.getElementById('espId').value = e.target.value;
+        document.getElementById('espPhone').value = selected.dataset.phone;
+    });
+
+    // 4. Submit
     document.getElementById('orderForm').addEventListener('submit', async (e) => {
         e.preventDefault();
-        document.getElementById('submitBtn').innerText = "Submitting...";
-
-        const espSelect = document.getElementById('espSelect');
-        const orderData = {
-            order_date: new Date().toISOString(),
+        const btn = document.getElementById('submitBtn');
+        btn.innerText = "Sending...";
+        
+        const { error } = await supabase.from('orders').insert([{
             territory: document.getElementById('territory').value,
             esp_id: document.getElementById('espId').value,
-            esp_name: espSelect.options[espSelect.selectedIndex].text,
+            esp_name: document.getElementById('espSelect').options[document.getElementById('espSelect').selectedIndex].text,
             esp_phone: document.getElementById('espPhone').value,
             sales_rep: document.getElementById('salesRep').value,
             delivery_date: document.getElementById('deliveryDate').value,
             decoder_qty: parseInt(document.getElementById('qty').value),
             remarks: document.getElementById('remarks').value
-        };
+        }]);
 
-        const { error } = await supabase.from('orders').insert([orderData]);
-        
         if (error) {
             document.getElementById('statusMsg').innerHTML = `<div class="alert alert-danger">Error: ${error.message}</div>`;
         } else {
             document.getElementById('statusMsg').innerHTML = '<div class="alert alert-success">Order Submitted Successfully!</div>';
-            e.target.reset();
+            document.getElementById('orderForm').reset();
         }
-        document.getElementById('submitBtn').innerText = "SUBMIT ORDER";
+        btn.innerText = "SUBMIT ORDER";
     });
 });
