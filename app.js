@@ -40,7 +40,7 @@ function initUI() {
         };
 
         try {
-            const res = await fetch('YOUR_WEB_APP_URL', {
+            const res = await fetch('https://script.google.com/macros/s/AKfycbww9kwoR-Js3uRh-RwhWKeFAH-_FfSnPxLQ6hTUWrI1enmC16l5ODvyvdg3-qX4ke06EA/exec', {
                 method: 'POST',
                 mode: 'no-cors',
                 body: JSON.stringify(payload)
