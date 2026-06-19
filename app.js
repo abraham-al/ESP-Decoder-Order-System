@@ -43,26 +43,78 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     // --- D. Handle Form Interactions ---
-    
+
+    const espSearch = document.getElementById('espSearch');
+    const espDropdownList = document.getElementById('espDropdownList');
+    const espIdField = document.getElementById('espId');
+    const espPhoneField = document.getElementById('espPhone');
+    let filteredEsps = [];
+
+    function clearEspSelection() {
+        espIdField.value = '';
+        espPhoneField.value = '';
+    }
+
+    function renderEspDropdown(list) {
+        espDropdownList.innerHTML = '';
+        if (!list.length) {
+            espDropdownList.style.display = 'none';
+            return;
+        }
+        list.forEach(s => {
+            const item = document.createElement('button');
+            item.type = 'button';
+            item.className = 'list-group-item list-group-item-action';
+            item.textContent = s.esp_name;
+            item.addEventListener('click', () => {
+                espSearch.value = s.esp_name;
+                espIdField.value = s.esp_id;
+                espPhoneField.value = s.phone || '';
+                espDropdownList.style.display = 'none';
+            });
+            espDropdownList.appendChild(item);
+        });
+        espDropdownList.style.display = 'block';
+    }
+
     // Filter ESPs when Territory changes
     terrSelect.addEventListener('change', (e) => {
-        const espSelect = document.getElementById('espSelect');
-        espSelect.innerHTML = '<option value="">Select Shop</option>'; // Reset dropdown
-        
-        allEsps.filter(s => s.territory === e.target.value).forEach(s => {
-            const opt = document.createElement('option');
-            opt.value = s.esp_id;
-            opt.setAttribute('data-phone', s.phone);
-            opt.textContent = s.esp_name;
-            espSelect.appendChild(opt);
-        });
+        filteredEsps = allEsps
+            .filter(s => s.territory === e.target.value)
+            .sort((a, b) => a.esp_name.localeCompare(b.esp_name)); // Order by ESP name
+
+        espSearch.value = '';
+        clearEspSelection();
+        espDropdownList.style.display = 'none';
+
+        if (filteredEsps.length) {
+            espSearch.disabled = false;
+            espSearch.placeholder = 'Type to search shop...';
+        } else {
+            espSearch.disabled = true;
+            espSearch.placeholder = 'No shops found for this territory';
+        }
     });
 
-    // Update ID and Phone fields when ESP is selected
-    document.getElementById('espSelect').addEventListener('change', (e) => {
-        const selectedOpt = e.target.options[e.target.selectedIndex];
-        document.getElementById('espId').value = e.target.value;
-        document.getElementById('espPhone').value = selectedOpt.dataset.phone || '';
+    // Show full sorted list on focus, filter as the user types
+    espSearch.addEventListener('focus', () => {
+        renderEspDropdown(filteredEsps);
+    });
+
+    espSearch.addEventListener('input', (e) => {
+        clearEspSelection(); // force re-selection if they're editing the text
+        const term = e.target.value.trim().toLowerCase();
+        const matches = term
+            ? filteredEsps.filter(s => s.esp_name.toLowerCase().includes(term))
+            : filteredEsps;
+        renderEspDropdown(matches);
+    });
+
+    // Close dropdown when clicking outside it
+    document.addEventListener('click', (e) => {
+        if (!espSearch.contains(e.target) && !espDropdownList.contains(e.target)) {
+            espDropdownList.style.display = 'none';
+        }
     });
 
     // --- E. Handle Form Submission ---
@@ -70,16 +122,21 @@ document.addEventListener('DOMContentLoaded', async () => {
         e.preventDefault();
         const btn = document.getElementById('submitBtn');
         const statusMsg = document.getElementById('statusMsg');
-        
+
+        // Make sure a real ESP was picked from the dropdown, not just typed text
+        if (!espIdField.value) {
+            statusMsg.innerHTML = '<div class="alert alert-danger">Please select a shop from the dropdown list.</div>';
+            return;
+        }
+
         btn.innerText = "Submitting...";
-        
-        const espSelect = document.getElementById('espSelect');
+
         const orderData = {
-            order_date: new Date().toISOString(), // Auto-fill with current submission timestamp
+            order_date: new Date().toISOString(),
             territory: document.getElementById('territory').value,
-            esp_id: document.getElementById('espId').value,
-            esp_name: espSelect.options[espSelect.selectedIndex].text,
-            esp_phone: document.getElementById('espPhone').value,
+            esp_id: espIdField.value,
+            esp_name: espSearch.value,
+            esp_phone: espPhoneField.value,
             sales_rep: document.getElementById('salesRep').value,
             delivery_date: document.getElementById('deliveryDate').value,
             decoder_qty: parseInt(document.getElementById('qty').value),
@@ -94,6 +151,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         } else {
             statusMsg.innerHTML = '<div class="alert alert-success">Order Submitted Successfully!</div>';
             e.target.reset(); // Clear the form
+            espSearch.value = '';
+            espSearch.disabled = true;
+            espSearch.placeholder = 'Select a territory first...';
+            filteredEsps = [];
+            espDropdownList.style.display = 'none';
         }
         btn.innerText = "SUBMIT ORDER";
     });
