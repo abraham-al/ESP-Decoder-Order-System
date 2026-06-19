@@ -68,11 +68,24 @@ document.addEventListener('DOMContentLoaded', async () => {
     const espDropdownList = document.getElementById('espDropdownList');
     const espIdField = document.getElementById('espId');
     const espPhoneField = document.getElementById('espPhone');
+    const phoneHint = document.getElementById('phoneHint');
     let filteredEsps = [];
+    let selectedEspNeedsPhoneUpdate = false;
+
+    function isPhoneMissing(phone) {
+        if (!phone) return true;
+        const p = String(phone).trim().toLowerCase();
+        return p === '' || p === 'unknown' || p === 'n/a' || p === 'na';
+    }
 
     function clearEspSelection() {
         espIdField.value = '';
         espPhoneField.value = '';
+        espPhoneField.readOnly = true;
+        espPhoneField.required = false;
+        espPhoneField.classList.remove('border-warning');
+        phoneHint.style.display = 'none';
+        selectedEspNeedsPhoneUpdate = false;
     }
 
     function renderEspDropdown(list) {
@@ -89,7 +102,23 @@ document.addEventListener('DOMContentLoaded', async () => {
             item.addEventListener('click', () => {
                 espSearch.value = s.esp_name;
                 espIdField.value = s.esp_id;
-                espPhoneField.value = s.phone || '';
+
+                selectedEspNeedsPhoneUpdate = isPhoneMissing(s.phone);
+                if (selectedEspNeedsPhoneUpdate) {
+                    espPhoneField.value = '';
+                    espPhoneField.readOnly = false;
+                    espPhoneField.required = true;
+                    espPhoneField.classList.add('border-warning');
+                    phoneHint.style.display = 'block';
+                    espPhoneField.focus();
+                } else {
+                    espPhoneField.value = s.phone;
+                    espPhoneField.readOnly = true;
+                    espPhoneField.required = false;
+                    espPhoneField.classList.remove('border-warning');
+                    phoneHint.style.display = 'none';
+                }
+
                 espDropdownList.style.display = 'none';
             });
             espDropdownList.appendChild(item);
@@ -149,7 +178,30 @@ document.addEventListener('DOMContentLoaded', async () => {
             return;
         }
 
+        // If this shop had no phone on file, the field is now required — double check it's filled
+        if (selectedEspNeedsPhoneUpdate && !espPhoneField.value.trim()) {
+            statusMsg.innerHTML = '<div class="alert alert-danger">This shop has no phone number on file — please enter one.</div>';
+            espPhoneField.focus();
+            return;
+        }
+
         btn.innerText = "Submitting...";
+
+        // If we collected a new phone number, save it back to the esps table for next time
+        if (selectedEspNeedsPhoneUpdate && espPhoneField.value.trim()) {
+            const newPhone = espPhoneField.value.trim();
+            const { error: phoneUpdateError } = await db
+                .from('esps')
+                .update({ phone: newPhone })
+                .eq('esp_id', espIdField.value);
+
+            if (phoneUpdateError) {
+                console.error("Failed to update ESP phone:", phoneUpdateError);
+            } else {
+                const espRecord = allEsps.find(x => String(x.esp_id) === String(espIdField.value));
+                if (espRecord) espRecord.phone = newPhone;
+            }
+        }
 
         const orderData = {
             order_date: new Date().toISOString(),
@@ -176,6 +228,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             espSearch.placeholder = 'Select a territory first...';
             filteredEsps = [];
             espDropdownList.style.display = 'none';
+            clearEspSelection();
         }
         btn.innerText = "SUBMIT ORDER";
     });
