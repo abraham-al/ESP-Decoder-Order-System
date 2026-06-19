@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const terrSelect = document.getElementById('territory');
     TERRITORIES.forEach(t => terrSelect.innerHTML += `<option value="${t}">${t}</option>`);
     
-    const res = await fetch('https://script.google.com/macros/s/AKfycbzUe_LpunHXO5MaCM84_MWFi7_rOZWimlRvRf7qPbC_lW1QN6hiG4aS3Rc4u6Q60nfUMA/exec');
+    const res = await fetch('https://script.google.com/macros/s/AKfycbzAYMiTpKpNOfT0-pfr1_T47NO3TekYG6RyA2kUboTxw8kAPjimlfsVyZ2_Dvmpaz1SiQ/exec');
     const data = await res.json();
     
     const repSelect = document.getElementById('salesRep');
@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const formData = new FormData(e.target);
         const params = new URLSearchParams(formData);
         
-        await fetch('https://script.google.com/macros/s/AKfycbzUe_LpunHXO5MaCM84_MWFi7_rOZWimlRvRf7qPbC_lW1QN6hiG4aS3Rc4u6Q60nfUMA/exec', { method: 'POST', body: params });
+        await fetch('https://script.google.com/macros/s/AKfycbzAYMiTpKpNOfT0-pfr1_T47NO3TekYG6RyA2kUboTxw8kAPjimlfsVyZ2_Dvmpaz1SiQ/exec', { method: 'POST', body: params });
         
         document.getElementById('statusMsg').innerHTML = '<div class="alert alert-success">Order Submitted Successfully!</div>';
         e.target.reset();
