@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     TERRITORIES.forEach(t => terrSelect.innerHTML += `<option value="${t}">${t}</option>`);
     
     // Fetch Master Data
-    const res = await fetch('https://script.google.com/macros/s/AKfycbxS3voaSu9Hs3r2D40AP1qGwrSEH94LYjYeIew4ifUhTLibs40ulR8Jq3c_Uijwjm-Amw/exec');
+    const res = await fetch('https://script.google.com/macros/s/AKfycbzClG57XttRl66RgzS37mI0anKjfDoYNJS2blpNcBGb4o3VR-_CYAbl-KBkz-Q7YSuflA/exec');
     const data = await res.json();
     
     const repSelect = document.getElementById('salesRep');
@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         
         const formData = new URLSearchParams(new FormData(document.getElementById('orderForm')));
         
-        await fetch('https://script.google.com/macros/s/AKfycbxS3voaSu9Hs3r2D40AP1qGwrSEH94LYjYeIew4ifUhTLibs40ulR8Jq3c_Uijwjm-Amw/exec', {
+        await fetch('https://script.google.com/macros/s/AKfycbzClG57XttRl66RgzS37mI0anKjfDoYNJS2blpNcBGb4o3VR-_CYAbl-KBkz-Q7YSuflA/exec', {
             method: 'POST',
             body: formData
         });
