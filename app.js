@@ -9,14 +9,31 @@ const TERRITORIES = ["Adama", "Arada and Sululta", "Arbaminch", "Bahirdar and Go
 let allEsps = [];
 
 document.addEventListener('DOMContentLoaded', async () => {
-    // Populate Territory
-    const terrSelect = document.getElementById('territory');
-    TERRITORIES.forEach(t => {
-        let opt = document.createElement('option');
-        opt.value = t;
-        opt.textContent = t;
-        terrSelect.appendChild(opt);
-    });
+    try {
+        // 1. Load Sales Reps
+        const { data: reps, error: repError } = await supabase.from('reps').select('*');
+        if (repError) throw repError;
+        
+        const repSelect = document.getElementById('salesRep');
+        reps.forEach(r => {
+            let opt = document.createElement('option');
+            opt.value = r.name; // Double-check if column is 'name'
+            opt.textContent = r.name;
+            repSelect.appendChild(opt);
+        });
+
+        // 2. Load ESPs
+        const { data: esps, error: espError } = await supabase.from('esps').select('*');
+        if (espError) throw espError;
+        
+        allEsps = esps;
+        console.log("Data successfully loaded!");
+
+    } catch (err) {
+        console.error("Supabase Load Error:", err.message);
+        document.getElementById('statusMsg').innerHTML = `<div class="alert alert-warning">Check Console: ${err.message}</div>`;
+    }
+});
 
     // Fetch ESPs and Reps from Supabase
     // NOTE: Ensure your table names are EXACTLY 'esps' and 'reps'
