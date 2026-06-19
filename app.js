@@ -1,4 +1,4 @@
-// Initialize Supabase
+
 const supabase = supabase.createClient(
     'https://umkfhmjzqvqlebwzrmea.supabase.co', 
     'sb_publishable_gBbVKE0rmVIhYJH3HDLEYQ_twdbDuaQ'
