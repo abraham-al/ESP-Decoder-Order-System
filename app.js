@@ -1,45 +1,59 @@
-const TERRITORIES = [
-  "Adama", "Arada and Sululta", "Arbaminch", "Bahirdar and Gondor", "Bole", 
-  "Burayu", "Debre Birhan", "Dessie and Woldiya", "Diredawa", "Dukem", 
-  "Hagere Mariam", "Hawassa", "Jimma and Ambo", "Ldeta Kirkos and Sebeta", 
-  "Mekele and Shire", "Shahemenie", "Welayta"
-];
-
-let masterData = { esps: [], reps: [] };
-
-document.addEventListener('DOMContentLoaded', async () => {
-    // Populate Territories immediately
-    const terrSelect = document.getElementById('territory');
-    TERRITORIES.forEach(t => terrSelect.innerHTML += `<option value="${t}">${t}</option>`);
-
-    // Load Data
-    try {
-        let cached = localStorage.getItem('sales_data');
-        if (cached) {
-            masterData = JSON.parse(cached);
-        } else {
-            const res = await fetch('https://script.google.com/macros/s/AKfycbxeoGCuSrQjd15p9nP3E2pSO4MsObqOMhjXRTMy4yX4rz25hBgm4UPO0DMPFhS2Wya1yg/exec');
-            masterData = await res.json();
-            localStorage.setItem('sales_data', JSON.stringify(masterData));
-        }
-    } catch (e) { console.error("Offline or Error"); }
-
-    initUI();
-});
+// ... (Keep your existing initialization logic)
 
 function initUI() {
+    const terrSelect = document.getElementById('territory');
     const espSelect = document.getElementById('espSelect');
-    document.getElementById('territory').addEventListener('change', (e) => {
-        const val = e.target.value;
-        // Filter ESPs based on selected territory (Column 0 in Sheet)
-        const filtered = masterData.esps.filter(s => s[0] === val);
+    
+    // Territory Change Filter
+    terrSelect.addEventListener('change', (e) => {
+        const selectedTerritory = e.target.value;
+        // Reset ESP dropdown
         espSelect.innerHTML = '<option value="">Select Shop</option>';
+        
+        // Filter shops belonging to that territory (Col A / s[0])
+        const filtered = masterData.esps.filter(s => s[0] === selectedTerritory);
+        
         filtered.forEach(s => {
             espSelect.innerHTML += `<option value="${s[1]}" data-phone="${s[3]}">${s[2]}</option>`;
         });
     });
-    
-    // Populate Reps
-    const repSelect = document.getElementById('salesRep');
-    masterData.reps.forEach(r => repSelect.innerHTML += `<option value="${r[1]}">${r[1]}</option>`);
+
+    // Handle Form Submission
+    document.getElementById('orderForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const btn = document.getElementById('submitBtn');
+        const statusMsg = document.getElementById('statusMsg');
+        
+        btn.disabled = true;
+        btn.innerText = "Submitting...";
+        
+        const payload = {
+            order_date: new Date().toLocaleDateString(),
+            territory: document.getElementById('territory').value,
+            esp_id: document.getElementById('espId').value,
+            esp_name: document.getElementById('espSelect').options[document.getElementById('espSelect').selectedIndex].text,
+            esp_phone: document.getElementById('espPhone').value,
+            sales_rep: document.getElementById('salesRep').value,
+            delivery_date: document.getElementById('deliveryDate').value,
+            decoder_qty: document.getElementById('qty').value,
+            remarks: document.getElementById('remarks').value
+        };
+
+        try {
+            const res = await fetch('YOUR_WEB_APP_URL', {
+                method: 'POST',
+                mode: 'no-cors',
+                body: JSON.stringify(payload)
+            });
+            // Show Success
+            statusMsg.innerHTML = '<div class="alert alert-success">Order Submitted Successfully!</div>';
+            document.getElementById('orderForm').reset();
+            espSelect.innerHTML = '<option value="">Select Territory First</option>';
+        } catch (err) {
+            statusMsg.innerHTML = '<div class="alert alert-danger">Submission failed. Try again.</div>';
+        } finally {
+            btn.disabled = false;
+            btn.innerText = "SUBMIT ORDER";
+        }
+    });
 }
