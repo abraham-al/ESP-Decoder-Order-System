@@ -4,8 +4,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const terrSelect = document.getElementById('territory');
     TERRITORIES.forEach(t => terrSelect.innerHTML += `<option value="${t}">${t}</option>`);
     
-    // Fetch Master Data
-    const res = await fetch('https://script.google.com/macros/s/AKfycbyKAryunLrQYmYd-vhZnFtD_ed1NYclvfIaxJgVU0Niugc6BU5g4mygpMD1mnhWd3yo4A/exec');
+    const res = await fetch('https://script.google.com/macros/s/AKfycbzUe_LpunHXO5MaCM84_MWFi7_rOZWimlRvRf7qPbC_lW1QN6hiG4aS3Rc4u6Q60nfUMA/exec');
     const data = await res.json();
     
     const repSelect = document.getElementById('salesRep');
@@ -20,24 +19,22 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 
     document.getElementById('espSelect').addEventListener('change', (e) => {
-        const selected = e.target.options[e.target.selectedIndex];
         document.getElementById('espId').value = e.target.value;
-        document.getElementById('espPhone').value = selected.dataset.phone;
+        document.getElementById('espPhone').value = e.target.options[e.target.selectedIndex].dataset.phone;
     });
 
     document.getElementById('orderForm').addEventListener('submit', async (e) => {
         e.preventDefault();
-        document.getElementById('submitBtn').innerText = "Sending...";
+        const btn = document.getElementById('submitBtn');
+        btn.innerText = "Sending...";
         
-        const formData = new URLSearchParams(new FormData(document.getElementById('orderForm')));
+        const formData = new FormData(e.target);
+        const params = new URLSearchParams(formData);
         
-        await fetch('https://script.google.com/macros/s/AKfycbyKAryunLrQYmYd-vhZnFtD_ed1NYclvfIaxJgVU0Niugc6BU5g4mygpMD1mnhWd3yo4A/exec', {
-            method: 'POST',
-            body: formData
-        });
-
+        await fetch('https://script.google.com/macros/s/AKfycbzUe_LpunHXO5MaCM84_MWFi7_rOZWimlRvRf7qPbC_lW1QN6hiG4aS3Rc4u6Q60nfUMA/exec', { method: 'POST', body: params });
+        
         document.getElementById('statusMsg').innerHTML = '<div class="alert alert-success">Order Submitted Successfully!</div>';
-        document.getElementById('orderForm').reset();
-        document.getElementById('submitBtn').innerText = "SUBMIT ORDER";
+        e.target.reset();
+        btn.innerText = "SUBMIT ORDER";
     });
 });
