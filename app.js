@@ -75,6 +75,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         
         const espSelect = document.getElementById('espSelect');
         const orderData = {
+            order_date: new Date().toISOString(), // Auto-fill with current submission timestamp
             territory: document.getElementById('territory').value,
             esp_id: document.getElementById('espId').value,
             esp_name: espSelect.options[espSelect.selectedIndex].text,
