@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DStv | Admin - Orders</title>
+    <link href="https://unpkg.com/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+</head>
+<body>
+    <div class="container py-4">
+        <div class="card p-4 mx-auto" style="max-width: 1100px;">
+            <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+                <h3 class="mb-0">Orders Admin</h3>
+                <div>
+                    <button id="refreshBtn" class="btn btn-outline-light btn-sm me-2">Refresh</button>
+                    <button id="exportCsvBtn" class="btn btn-primary btn-sm me-2">Export CSV</button>
+                    <button id="exportXlsxBtn" class="btn btn-primary btn-sm">Export Excel</button>
+                </div>
+            </div>
+
+            <div id="statusMsg" class="mb-3"></div>
+
+            <div class="table-responsive">
+                <table class="table table-dark table-striped table-bordered align-middle" id="ordersTable">
+                    <thead>
+                        <tr>
+                            <th>Order Date</th>
+                            <th>Territory</th>
+                            <th>ESP ID</th>
+                            <th>ESP Name</th>
+                            <th>Phone</th>
+                            <th>Sales Rep</th>
+                            <th>Delivery Date</th>
+                            <th>Qty</th>
+                            <th>Remarks</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ordersBody">
+                        <tr><td colspan="9" class="text-center">Loading...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="admin.js"></script>
+</body>
+</html>
