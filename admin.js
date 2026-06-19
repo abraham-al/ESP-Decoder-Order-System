@@ -55,19 +55,30 @@ async function loadOrders() {
     statusMsg.innerHTML = '';
     document.getElementById('ordersBody').innerHTML = '<tr><td colspan="9" class="text-center">Loading...</td></tr>';
 
-    const { data, error } = await db
-        .from('orders')
-        .select('*')
-        .order('order_date', { ascending: false });
+    const pageSize = 1000;
+    let from = 0;
+    let allRows = [];
 
-    if (error) {
-        statusMsg.innerHTML = `<div class="alert alert-danger">Error loading orders: ${error.message}</div>`;
-        currentOrders = [];
-        renderTable([]);
-        return;
+    while (true) {
+        const { data, error } = await db
+            .from('orders')
+            .select('*')
+            .order('order_date', { ascending: false })
+            .range(from, from + pageSize - 1);
+
+        if (error) {
+            statusMsg.innerHTML = `<div class="alert alert-danger">Error loading orders: ${error.message}</div>`;
+            currentOrders = [];
+            renderTable([]);
+            return;
+        }
+
+        allRows = allRows.concat(data || []);
+        if (!data || data.length < pageSize) break; // last page reached
+        from += pageSize;
     }
 
-    currentOrders = data || [];
+    currentOrders = allRows;
     renderTable(currentOrders);
 }
 
