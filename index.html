@@ -14,16 +14,17 @@
             <h3 class="text-center mb-4">DSTV ESP Order Collector</h3>
             <form id="orderForm">
                 <div class="mb-3">
-                    <label class="form-label">Please Select Your Name</label>
-                    <select id="salesRep" class="form-select" required><option value="">Select Your Name</option></select>
+                    <label class="form-label">Sales Representative</label>
+                    <select id="salesRep" class="form-select" required><option value="">Select Rep</option></select>
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Territory</label>
                     <select id="territory" class="form-select" required><option value="">Select Territory</option></select>
                 </div>
-                <div class="mb-3">
+                <div class="mb-3 position-relative">
                     <label class="form-label">Electronic Shop (ESP)</label>
-                    <select id="espSelect" class="form-select" required><option value="">Select Shop</option></select>
+                    <input type="text" id="espSearch" class="form-control" placeholder="Select a territory first..." autocomplete="off" disabled>
+                    <div id="espDropdownList" class="list-group position-absolute w-100" style="z-index: 1050; max-height: 220px; overflow-y: auto; display: none;"></div>
                 </div>
                 <div class="row">
                     <div class="col-6 mb-3"><label class="form-label">ESP ID</label><input type="text" id="espId" class="form-control" readonly></div>
