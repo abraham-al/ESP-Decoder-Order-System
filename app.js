@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Fetch Data
     try {
-        const res = await fetch('https://script.google.com/macros/s/AKfycbwXk26c1-9mfjEeTTrdncmjclBviSEvBhtUFCuvniRJFWfQZdebUT2Uy-mduJPT3JP2DQ/exec');
+        const res = await fetch('https://script.google.com/macros/s/AKfycbxS3voaSu9Hs3r2D40AP1qGwrSEH94LYjYeIew4ifUhTLibs40ulR8Jq3c_Uijwjm-Amw/exec');
         masterData = await res.json();
         localStorage.setItem('sales_data', JSON.stringify(masterData));
         initUI();
