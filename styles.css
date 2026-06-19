@@ -26,7 +26,24 @@ body {
     font-weight: 700;
     letter-spacing: 1px;
 }
-
 .card h3 {
     color: #ffffff;
+}
+#espDropdownList {
+    background: #0a1428;
+    border: 1px solid #1a3a5f;
+    border-radius: 8px;
+    margin-top: 2px;
+}
+#espDropdownList .list-group-item {
+    background: #0a1428;
+    color: #ffffff;
+    border-color: #1a3a5f;
+}
+#espDropdownList .list-group-item:hover {
+    background: #14305a;
+    color: #ffffff;
+}
+#espSearch:disabled {
+    opacity: 0.5;
 }
